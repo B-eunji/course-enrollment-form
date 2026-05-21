@@ -4,7 +4,7 @@ export interface ApplicantInfo {
   name: string;
   email: string;
   phone: string;
-  motivation?: '';
+  motivation?: string;
 }
 
 export interface Participant {

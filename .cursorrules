@@ -1,0 +1,13 @@
+- Use TypeScript strictly
+
+- Prefer functional React components
+
+- Use App Router conventions
+
+- Keep components small and reusable
+
+- Use clear naming
+
+- Add comments only when necessary
+
+- Prefer readability over abstraction

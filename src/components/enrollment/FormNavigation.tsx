@@ -10,6 +10,7 @@ interface FormNavigationProps {
   onNext: () => void;
   onSubmit: () => void;
   isSubmitting?: boolean;
+  isSubmitDisabled?: boolean;
 }
 
 export default function FormNavigation({
@@ -18,12 +19,20 @@ export default function FormNavigation({
   onNext,
   onSubmit,
   isSubmitting = false,
+  isSubmitDisabled = false,
 }: FormNavigationProps) {
   const isFirstStep = currentStep === 0;
   const isFinalStep = currentStep === LAST_STEP;
 
   return (
-    <div className="flex items-center justify-between pt-6">
+    <div className="pt-6">
+      {isFinalStep && isSubmitDisabled && !isSubmitting && (
+        <p className="mb-3 text-center text-xs text-zinc-400">
+          약관에 동의해야 제출할 수 있습니다.
+        </p>
+      )}
+
+      <div className="flex items-center justify-between">
       {/* 이전 버튼: 첫 단계에서는 렌더링하지 않음 */}
       {isFirstStep ? (
         <div aria-hidden="true" />
@@ -43,7 +52,7 @@ export default function FormNavigation({
         <button
           type="button"
           onClick={onSubmit}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isSubmitDisabled}
           className="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting && (
@@ -80,6 +89,7 @@ export default function FormNavigation({
           다음
         </button>
       )}
+      </div>
     </div>
   );
 }

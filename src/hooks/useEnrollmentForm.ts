@@ -8,6 +8,11 @@ import type {
   GroupInfo,
   Participant,
 } from "@/types/enrollment";
+import {
+  validateCourseStep,
+  validateApplicantStep,
+  validateConfirmStep,
+} from "@/utils/validation";
 
 export type Step = 0 | 1 | 2;
 
@@ -48,10 +53,30 @@ function createInitialFormData(): EnrollmentFormState {
 export function useEnrollmentForm() {
   const [currentStep, setCurrentStep] = useState<Step>(0);
   const [formData, setFormData] = useState<EnrollmentFormState>(createInitialFormData);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // ── step validation ────────────────────────────────────────
+
+  function validateCurrentStep(): Record<string, string> {
+    switch (currentStep) {
+      case 0:
+        return validateCourseStep(formData);
+      case 1:
+        return validateApplicantStep(formData);
+      case 2:
+        return validateConfirmStep(formData);
+    }
+  }
 
   // ── 스텝 이동 ──────────────────────────────────────────────
 
   function goToNextStep() {
+    const stepErrors = validateCurrentStep();
+    if (Object.keys(stepErrors).length > 0) {
+      setErrors(stepErrors);
+      return;
+    }
+    setErrors({});
     setCurrentStep((prev) => (prev < 2 ? ((prev + 1) as Step) : prev));
   }
 
@@ -144,6 +169,7 @@ export function useEnrollmentForm() {
   return {
     currentStep,
     formData,
+    errors,
     goToNextStep,
     goToPreviousStep,
     goToStep,

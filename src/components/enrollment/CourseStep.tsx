@@ -13,6 +13,7 @@ interface CourseStepProps {
   enrollmentType: EnrollmentType;
   onSelectCourse: (courseId: string) => void;
   onChangeEnrollmentType: (type: EnrollmentType) => void;
+  errors: Record<string, string>;
 }
 
 const CATEGORY_LABELS: Record<CategoryFilter, string> = {
@@ -40,6 +41,7 @@ export default function CourseStep({
   enrollmentType,
   onSelectCourse,
   onChangeEnrollmentType,
+  errors,
 }: CourseStepProps) {
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -120,6 +122,11 @@ export default function CourseStep({
           </button>
         ))}
       </div>
+
+      {/* 강의 선택 에러 */}
+      {errors.courseId !== undefined && (
+        <p className="text-xs text-red-500">{errors.courseId}</p>
+      )}
 
       {/* 강의 목록 */}
       {isLoading ? (

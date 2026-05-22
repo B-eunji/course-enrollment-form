@@ -10,6 +10,7 @@ interface ConfirmStepProps {
   selectedCourse?: Course;
   onEditStep: (step: Step) => void;
   onChangeAgreement: (agreed: boolean) => void;
+  errors: Record<string, string>;
 }
 
 const CATEGORY_LABELS: Record<CourseCategory, string> = {
@@ -73,6 +74,7 @@ export default function ConfirmStep({
   selectedCourse,
   onEditStep,
   onChangeAgreement,
+  errors,
 }: ConfirmStepProps) {
   const { applicant, type } = formData;
   const isGroup = type === "group";
@@ -180,7 +182,11 @@ export default function ConfirmStep({
       )}
 
       {/* 약관 동의 */}
-      <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-5 py-4">
+      <div
+        className={`rounded-xl border bg-zinc-50 px-5 py-4 ${
+          errors.agreedToTerms ? "border-red-400" : "border-zinc-200"
+        }`}
+      >
         <label className="flex cursor-pointer items-start gap-3 text-sm text-zinc-700">
           <input
             type="checkbox"
@@ -190,6 +196,9 @@ export default function ConfirmStep({
           />
           <span>수강 신청 및 개인정보 수집·이용 약관에 동의합니다.</span>
         </label>
+        {errors.agreedToTerms !== undefined && (
+          <p className="mt-2 text-xs text-red-500">{errors.agreedToTerms}</p>
+        )}
       </div>
     </div>
   );

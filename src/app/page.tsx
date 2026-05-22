@@ -13,6 +13,7 @@ export default function Home() {
   const {
     currentStep,
     formData,
+    errors,
     goToNextStep,
     goToPreviousStep,
     goToStep,
@@ -71,6 +72,7 @@ export default function Home() {
               enrollmentType={formData.type}
               onSelectCourse={updateCourseId}
               onChangeEnrollmentType={updateEnrollmentType}
+              errors={errors}
             />
           )}
 
@@ -81,6 +83,7 @@ export default function Home() {
               onUpdateGroup={updateGroup}
               onUpdateHeadCount={updateHeadCount}
               onUpdateParticipant={updateParticipant}
+              errors={errors}
             />
           )}
 
@@ -90,6 +93,7 @@ export default function Home() {
               selectedCourse={selectedCourse}
               onEditStep={goToStep}
               onChangeAgreement={updateAgreement}
+              errors={errors}
             />
           )}
 

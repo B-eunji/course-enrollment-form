@@ -8,7 +8,7 @@ interface FormNavigationProps {
   currentStep: Step;
   onPrevious: () => void;
   onNext: () => void;
-  onSubmit: () => void;
+  onSubmit: () => void | Promise<void>;
   isSubmitting?: boolean;
   isSubmitDisabled?: boolean;
 }

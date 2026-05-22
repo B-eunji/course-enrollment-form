@@ -177,6 +177,14 @@ export function useEnrollmentForm() {
     setFormData((prev) => ({ ...prev, agreedToTerms }));
   }
 
+  // ── 폼 전체 초기화 ─────────────────────────────────────────
+
+  function resetForm() {
+    setCurrentStep(0);
+    setFormData(createInitialFormData());
+    setErrors({});
+  }
+
   return {
     currentStep,
     formData,
@@ -192,5 +200,6 @@ export function useEnrollmentForm() {
     updateParticipant,
     updateHeadCount,
     updateAgreement,
+    resetForm,
   };
 }

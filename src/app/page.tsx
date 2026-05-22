@@ -2,11 +2,20 @@
 
 import { useEffect, useState } from "react";
 import type { Course, CourseListResponse } from "@/types/course";
+import type {
+  EnrollmentFormState,
+  EnrollmentRequest,
+  EnrollmentResponse,
+  ErrorCode,
+  ErrorResponse,
+} from "@/types/enrollment";
 import { useEnrollmentForm } from "@/hooks/useEnrollmentForm";
+import type { Step } from "@/hooks/useEnrollmentForm";
 import StepIndicator from "@/components/enrollment/StepIndicator";
 import CourseStep from "@/components/enrollment/CourseStep";
 import ApplicantStep from "@/components/enrollment/ApplicantStep";
 import ConfirmStep from "@/components/enrollment/ConfirmStep";
+import CompleteStep from "@/components/enrollment/CompleteStep";
 import FormNavigation from "@/components/enrollment/FormNavigation";
 
 // validation error key → DOM id 매핑
@@ -37,6 +46,55 @@ function resolveErrorId(key: string): string | null {
   return null;
 }
 
+function createEnrollmentRequest(
+  formData: EnrollmentFormState
+): EnrollmentRequest | null {
+  if (formData.type === "personal") {
+    return {
+      type: "personal",
+      courseId: formData.courseId,
+      applicant: formData.applicant,
+      agreedToTerms: formData.agreedToTerms,
+    };
+  }
+
+  // group 신청인데 group 데이터가 없으면 null 반환
+  if (formData.group === undefined) {
+    return null;
+  }
+
+  return {
+    type: "group",
+    courseId: formData.courseId,
+    applicant: formData.applicant,
+    group: formData.group,
+    agreedToTerms: formData.agreedToTerms,
+  };
+}
+
+const ERROR_MESSAGES: Record<ErrorCode, string> = {
+  COURSE_FULL:
+    "선택한 강의의 정원이 마감되었습니다. 다른 강의를 선택해 주세요.",
+  DUPLICATE_ENROLLMENT:
+    "이미 신청된 강의입니다. 입력 정보를 확인해 주세요.",
+  INVALID_INPUT: "입력값을 다시 확인해 주세요.",
+};
+
+const FALLBACK_ERROR_MESSAGE =
+  "신청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+
+async function parseErrorResponse(res: Response): Promise<ErrorResponse | null> {
+  try {
+    return (await res.json()) as ErrorResponse;
+  } catch {
+    return null;
+  }
+}
+
+function resolveErrorMessage(errorResponse: ErrorResponse): string {
+  return ERROR_MESSAGES[errorResponse.code] ?? FALLBACK_ERROR_MESSAGE;
+}
+
 export default function Home() {
   const {
     currentStep,
@@ -53,9 +111,14 @@ export default function Home() {
     updateHeadCount,
     updateParticipant,
     updateAgreement,
+    resetForm,
   } = useEnrollmentForm();
 
   const [courses, setCourses] = useState<Course[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [enrollmentResult, setEnrollmentResult] =
+    useState<EnrollmentResponse | null>(null);
 
   // validation 실패 시 첫 번째 에러 위치로 스크롤
   useEffect(() => {
@@ -86,8 +149,94 @@ export default function Home() {
     (course) => course.id === formData.courseId
   );
 
-  function handleSubmit() {
-    console.log("submit", formData);
+  // ── 스텝 이동 핸들러 (submitError 초기화 포함) ─────────────
+
+  function handlePrevious() {
+    setSubmitError(null);
+    goToPreviousStep();
+  }
+
+  function handleNext() {
+    setSubmitError(null);
+    goToNextStep();
+  }
+
+  function handleEditStep(step: Step) {
+    setSubmitError(null);
+    goToStep(step);
+  }
+
+  // ── 제출 핸들러 ────────────────────────────────────────────
+
+  async function handleSubmit() {
+    setSubmitError(null);
+
+    const requestData = createEnrollmentRequest(formData);
+    if (requestData === null) {
+      setSubmitError(
+        "단체 신청 정보가 누락되었습니다. 이전 단계에서 다시 입력해 주세요."
+      );
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/enrollments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData),
+      });
+
+      if (res.ok) {
+        const result = (await res.json()) as EnrollmentResponse;
+        setEnrollmentResult(result);
+      } else {
+        const errorBody = await parseErrorResponse(res);
+        setSubmitError(
+          errorBody !== null
+            ? resolveErrorMessage(errorBody)
+            : FALLBACK_ERROR_MESSAGE
+        );
+      }
+    } catch {
+      setSubmitError(FALLBACK_ERROR_MESSAGE);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  // ── 처음으로 돌아가기 ──────────────────────────────────────
+
+  function handleReset() {
+    resetForm();
+    setEnrollmentResult(null);
+    setSubmitError(null);
+    setIsSubmitting(false);
+  }
+
+  // ── 성공 화면 ──────────────────────────────────────────────
+
+  if (enrollmentResult !== null) {
+    return (
+      <main className="min-h-screen bg-zinc-50 px-4 py-12">
+        <div className="mx-auto max-w-2xl">
+          <div className="mb-8 text-center">
+            <h1 className="text-2xl font-bold text-zinc-900">수강 신청 완료</h1>
+            <p className="mt-2 text-sm text-zinc-500">
+              신청 정보가 정상적으로 접수되었습니다.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
+            <CompleteStep
+              enrollmentResult={enrollmentResult}
+              formData={formData}
+              selectedCourse={selectedCourse}
+              onReset={handleReset}
+            />
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -135,20 +284,30 @@ export default function Home() {
             <ConfirmStep
               formData={formData}
               selectedCourse={selectedCourse}
-              onEditStep={goToStep}
+              onEditStep={handleEditStep}
               onChangeAgreement={updateAgreement}
               errors={errors}
               onClearError={clearFieldError}
             />
           )}
 
+          {/* 제출 에러 메시지 */}
+          {submitError !== null && currentStep === 2 && (
+            <div
+              role="alert"
+              className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            >
+              {submitError}
+            </div>
+          )}
+
           {/* 네비게이션 */}
           <FormNavigation
             currentStep={currentStep}
-            onPrevious={goToPreviousStep}
-            onNext={goToNextStep}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
             onSubmit={handleSubmit}
-            isSubmitting={false}
+            isSubmitting={isSubmitting}
             isSubmitDisabled={!formData.agreedToTerms}
           />
         </div>

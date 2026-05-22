@@ -9,6 +9,34 @@ import ApplicantStep from "@/components/enrollment/ApplicantStep";
 import ConfirmStep from "@/components/enrollment/ConfirmStep";
 import FormNavigation from "@/components/enrollment/FormNavigation";
 
+// validation error key → DOM id 매핑
+// 동적 참가자 key (group.participants.N.name/email)는 resolveErrorId에서 별도 처리
+const ERROR_KEY_TO_ID: Record<string, string> = {
+  courseId: "course-selection-error",
+  "applicant.name": "applicant-name",
+  "applicant.email": "applicant-email",
+  "applicant.phone": "applicant-phone",
+  "applicant.motivation": "applicant-motivation",
+  "group.organizationName": "org-name",
+  "group.contactPerson": "contact-person",
+  "group.headCount": "head-count",
+  "group.participants": "group-participants",
+  agreedToTerms: "terms-agreement",
+};
+
+function resolveErrorId(key: string): string | null {
+  const staticId = ERROR_KEY_TO_ID[key];
+  if (staticId !== undefined) return staticId;
+
+  // group.participants.N.name 또는 group.participants.N.email
+  const match = /^group\.participants\.(\d+)\.(name|email)$/.exec(key);
+  if (match !== null) {
+    return `participant-${match[2]}-${match[1]}`;
+  }
+
+  return null;
+}
+
 export default function Home() {
   const {
     currentStep,
@@ -27,6 +55,19 @@ export default function Home() {
   } = useEnrollmentForm();
 
   const [courses, setCourses] = useState<Course[]>([]);
+
+  // validation 실패 시 첫 번째 에러 위치로 스크롤
+  useEffect(() => {
+    const keys = Object.keys(errors);
+    if (keys.length === 0) return;
+
+    const firstId = resolveErrorId(keys[0]);
+    if (firstId === null) return;
+
+    document
+      .getElementById(firstId)
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [errors]);
 
   useEffect(() => {
     fetch("/api/courses")

@@ -183,6 +183,7 @@ export default function ConfirmStep({
 
       {/* 약관 동의 */}
       <div
+        id="terms-agreement"
         className={`rounded-xl border bg-zinc-50 px-5 py-4 ${
           errors.agreedToTerms ? "border-red-400" : "border-zinc-200"
         }`}

@@ -211,7 +211,7 @@ export default function ApplicantStep({
 
           {/* 참가자 명단 */}
           {group !== null && group.participants.length > 0 && (
-            <div className="space-y-3">
+            <div id="group-participants" className="space-y-3">
               <h2 className="text-base font-semibold text-zinc-800">
                 참가자 명단
               </h2>

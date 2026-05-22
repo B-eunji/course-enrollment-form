@@ -125,7 +125,9 @@ export default function CourseStep({
 
       {/* 강의 선택 에러 */}
       {errors.courseId !== undefined && (
-        <p className="text-xs text-red-500">{errors.courseId}</p>
+        <p id="course-selection-error" className="text-xs text-red-500">
+          {errors.courseId}
+        </p>
       )}
 
       {/* 강의 목록 */}

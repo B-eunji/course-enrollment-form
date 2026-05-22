@@ -45,6 +45,7 @@ export default function Home() {
     goToNextStep,
     goToPreviousStep,
     goToStep,
+    clearFieldError,
     updateCourseId,
     updateEnrollmentType,
     updateApplicant,
@@ -114,6 +115,7 @@ export default function Home() {
               onSelectCourse={updateCourseId}
               onChangeEnrollmentType={updateEnrollmentType}
               errors={errors}
+              onClearError={clearFieldError}
             />
           )}
 
@@ -125,6 +127,7 @@ export default function Home() {
               onUpdateHeadCount={updateHeadCount}
               onUpdateParticipant={updateParticipant}
               errors={errors}
+              onClearError={clearFieldError}
             />
           )}
 
@@ -135,6 +138,7 @@ export default function Home() {
               onEditStep={goToStep}
               onChangeAgreement={updateAgreement}
               errors={errors}
+              onClearError={clearFieldError}
             />
           )}
 

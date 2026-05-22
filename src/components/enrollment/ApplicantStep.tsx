@@ -17,6 +17,7 @@ interface ApplicantStepProps {
   onUpdateHeadCount: (headCount: number) => void;
   onUpdateParticipant: (index: number, fields: Partial<Participant>) => void;
   errors: Record<string, string>;
+  onClearError: (key: string) => void;
 }
 
 function FieldLabel({
@@ -78,6 +79,7 @@ export default function ApplicantStep({
   onUpdateHeadCount,
   onUpdateParticipant,
   errors,
+  onClearError,
 }: ApplicantStepProps) {
   const { applicant, type } = formData;
   const isGroup = type === "group";
@@ -98,7 +100,10 @@ export default function ApplicantStep({
             value={applicant.name}
             placeholder="홍길동"
             hasError={!!errors["applicant.name"]}
-            onChange={(value) => onUpdateApplicant({ name: value })}
+            onChange={(value) => {
+              onUpdateApplicant({ name: value });
+              onClearError("applicant.name");
+            }}
           />
           <FieldError message={errors["applicant.name"]} />
         </div>
@@ -111,7 +116,10 @@ export default function ApplicantStep({
             value={applicant.email}
             placeholder="example@email.com"
             hasError={!!errors["applicant.email"]}
-            onChange={(value) => onUpdateApplicant({ email: value })}
+            onChange={(value) => {
+              onUpdateApplicant({ email: value });
+              onClearError("applicant.email");
+            }}
           />
           <FieldError message={errors["applicant.email"]} />
         </div>
@@ -124,7 +132,10 @@ export default function ApplicantStep({
             value={applicant.phone}
             placeholder="010-0000-0000"
             hasError={!!errors["applicant.phone"]}
-            onChange={(value) => onUpdateApplicant({ phone: value })}
+            onChange={(value) => {
+              onUpdateApplicant({ phone: value });
+              onClearError("applicant.phone");
+            }}
           />
           <FieldError message={errors["applicant.phone"]} />
         </div>
@@ -137,7 +148,10 @@ export default function ApplicantStep({
             placeholder="수강 동기를 입력해 주세요."
             rows={4}
             maxLength={300}
-            onChange={(e) => onUpdateApplicant({ motivation: e.target.value })}
+            onChange={(e) => {
+              onUpdateApplicant({ motivation: e.target.value });
+              onClearError("applicant.motivation");
+            }}
             className={`w-full resize-none rounded-lg border px-3 py-2 text-sm text-zinc-800 placeholder-zinc-400 focus:outline-none focus:ring-1 ${
               errors["applicant.motivation"]
                 ? "border-red-400 focus:border-red-400 focus:ring-red-400"
@@ -167,9 +181,10 @@ export default function ApplicantStep({
                 value={group?.organizationName ?? ""}
                 placeholder="(주)회사명"
                 hasError={!!errors["group.organizationName"]}
-                onChange={(value) =>
-                  onUpdateGroup({ organizationName: value })
-                }
+                onChange={(value) => {
+                  onUpdateGroup({ organizationName: value });
+                  onClearError("group.organizationName");
+                }}
               />
               <FieldError message={errors["group.organizationName"]} />
             </div>
@@ -182,7 +197,10 @@ export default function ApplicantStep({
                 value={group?.contactPerson ?? ""}
                 placeholder="010-0000-0000"
                 hasError={!!errors["group.contactPerson"]}
-                onChange={(value) => onUpdateGroup({ contactPerson: value })}
+                onChange={(value) => {
+                  onUpdateGroup({ contactPerson: value });
+                  onClearError("group.contactPerson");
+                }}
               />
               <FieldError message={errors["group.contactPerson"]} />
             </div>
@@ -192,7 +210,11 @@ export default function ApplicantStep({
               <select
                 id="head-count"
                 value={group?.headCount ?? 2}
-                onChange={(e) => onUpdateHeadCount(Number(e.target.value))}
+                onChange={(e) => {
+                  onUpdateHeadCount(Number(e.target.value));
+                  onClearError("group.headCount");
+                  onClearError("group.participants");
+                }}
                 className={`w-full rounded-lg border px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-1 ${
                   errors["group.headCount"]
                     ? "border-red-400 focus:border-red-400 focus:ring-red-400"
@@ -235,9 +257,10 @@ export default function ApplicantStep({
                         value={participant.name}
                         placeholder="홍길동"
                         hasError={!!errors[`group.participants.${index}.name`]}
-                        onChange={(value) =>
-                          onUpdateParticipant(index, { name: value })
-                        }
+                        onChange={(value) => {
+                          onUpdateParticipant(index, { name: value });
+                          onClearError(`group.participants.${index}.name`);
+                        }}
                       />
                       <FieldError message={errors[`group.participants.${index}.name`]} />
                     </div>
@@ -252,9 +275,10 @@ export default function ApplicantStep({
                         value={participant.email}
                         placeholder="example@email.com"
                         hasError={!!errors[`group.participants.${index}.email`]}
-                        onChange={(value) =>
-                          onUpdateParticipant(index, { email: value })
-                        }
+                        onChange={(value) => {
+                          onUpdateParticipant(index, { email: value });
+                          onClearError(`group.participants.${index}.email`);
+                        }}
                       />
                       <FieldError message={errors[`group.participants.${index}.email`]} />
                     </div>

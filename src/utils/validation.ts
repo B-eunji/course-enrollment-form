@@ -4,7 +4,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const KR_PHONE_REGEX = /^0\d{1,2}[- ]?\d{3,4}[- ]?\d{4}$/;
 
 export function validateCourseStep(
-  formState: EnrollmentFormState
+  formState: EnrollmentFormState,
 ): Record<string, string> {
   const errors: Record<string, string> = {};
 
@@ -16,7 +16,7 @@ export function validateCourseStep(
 }
 
 export function validateApplicantStep(
-  formState: EnrollmentFormState
+  formState: EnrollmentFormState,
 ): Record<string, string> {
   const errors: Record<string, string> = {};
   const { applicant, type, group } = formState;
@@ -31,7 +31,8 @@ export function validateApplicantStep(
   }
 
   if (!KR_PHONE_REGEX.test(applicant.phone)) {
-    errors["applicant.phone"] = "올바른 연락처 형식을 입력해주세요. (예: 010-1234-5678)";
+    errors["applicant.phone"] =
+      "올바른 연락처 형식을 입력해주세요. (예: 010-1234-5678)";
   }
 
   if (applicant.motivation !== undefined && applicant.motivation.length > 300) {
@@ -47,7 +48,7 @@ export function validateApplicantStep(
       }
 
       if (!group.contactPerson.trim()) {
-        errors["group.contactPerson"] = "담당자명을 입력해주세요.";
+        errors["group.contactPerson"] = "담당자 연락처를 입력해주세요.";
       }
 
       if (group.headCount < 2 || group.headCount > 10) {
@@ -61,7 +62,8 @@ export function validateApplicantStep(
 
       group.participants.forEach((p, i) => {
         if (!p.name.trim()) {
-          errors[`group.participants.${i}.name`] = "참가자 이름을 입력해주세요.";
+          errors[`group.participants.${i}.name`] =
+            "참가자 이름을 입력해주세요.";
         }
         if (!EMAIL_REGEX.test(p.email)) {
           errors[`group.participants.${i}.email`] =
@@ -75,7 +77,7 @@ export function validateApplicantStep(
 }
 
 export function validateConfirmStep(
-  formState: EnrollmentFormState
+  formState: EnrollmentFormState,
 ): Record<string, string> {
   const errors: Record<string, string> = {};
 

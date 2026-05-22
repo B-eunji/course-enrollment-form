@@ -14,6 +14,7 @@ interface CourseStepProps {
   onSelectCourse: (courseId: string) => void;
   onChangeEnrollmentType: (type: EnrollmentType) => void;
   errors: Record<string, string>;
+  onClearError: (key: string) => void;
 }
 
 const CATEGORY_LABELS: Record<CategoryFilter, string> = {
@@ -42,6 +43,7 @@ export default function CourseStep({
   onSelectCourse,
   onChangeEnrollmentType,
   errors,
+  onClearError,
 }: CourseStepProps) {
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,6 +78,7 @@ export default function CourseStep({
   function handleSelectCourse(course: Course) {
     if (course.currentEnrollment >= course.maxCapacity) return;
     onSelectCourse(course.id);
+    onClearError("courseId");
   }
 
   const allFilters: CategoryFilter[] = ["all", ...COURSE_CATEGORIES];

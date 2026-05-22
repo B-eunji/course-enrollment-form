@@ -11,6 +11,7 @@ interface ConfirmStepProps {
   onEditStep: (step: Step) => void;
   onChangeAgreement: (agreed: boolean) => void;
   errors: Record<string, string>;
+  onClearError: (key: string) => void;
 }
 
 const CATEGORY_LABELS: Record<CourseCategory, string> = {
@@ -75,6 +76,7 @@ export default function ConfirmStep({
   onEditStep,
   onChangeAgreement,
   errors,
+  onClearError,
 }: ConfirmStepProps) {
   const { applicant, type } = formData;
   const isGroup = type === "group";
@@ -192,7 +194,10 @@ export default function ConfirmStep({
           <input
             type="checkbox"
             checked={formData.agreedToTerms}
-            onChange={(e) => onChangeAgreement(e.target.checked)}
+            onChange={(e) => {
+              onChangeAgreement(e.target.checked);
+              onClearError("agreedToTerms");
+            }}
             className="mt-0.5 h-4 w-4 accent-blue-600"
           />
           <span>수강 신청 및 개인정보 수집·이용 약관에 동의합니다.</span>

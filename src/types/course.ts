@@ -22,5 +22,5 @@ export interface Course {
 
 export interface CourseListResponse {
   courses: Course[];
-  total: number;
+  categories: CourseCategory[];
 }

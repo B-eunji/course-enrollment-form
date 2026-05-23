@@ -1,9 +1,21 @@
 import type { NextRequest } from "next/server";
 import { MOCK_COURSES } from "@/constants/courses";
-import { COURSE_CATEGORIES, type CourseCategory,type CourseListResponse } from "@/types/course";
+import {
+  COURSE_CATEGORIES,
+  type Course,
+  type CourseCategory,
+  type CourseListResponse,
+} from "@/types/course";
 
-function isCourseCategory(value: string):  value is CourseCategory  {
+function isCourseCategory(value: string): value is CourseCategory {
   return (COURSE_CATEGORIES as readonly string[]).includes(value);
+}
+
+function createCourseListResponse(courses: Course[]): CourseListResponse {
+  return {
+    courses,
+    categories: [...COURSE_CATEGORIES],
+  };
 }
 
 export function GET(request: NextRequest) {
@@ -18,13 +30,8 @@ export function GET(request: NextRequest) {
     }
 
     const filtered = MOCK_COURSES.filter((c) => c.category === category);
-    const body: CourseListResponse = { courses: filtered, total: filtered.length };
-    return Response.json(body);
+    return Response.json(createCourseListResponse(filtered));
   }
 
-  const body: CourseListResponse = {
-    courses: MOCK_COURSES,
-    total: MOCK_COURSES.length,
-  };
-  return Response.json(body);
+  return Response.json(createCourseListResponse(MOCK_COURSES));
 }

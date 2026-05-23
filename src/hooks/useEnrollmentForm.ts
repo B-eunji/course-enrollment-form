@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import type {
   EnrollmentFormState,
@@ -81,14 +79,15 @@ export function useEnrollmentForm() {
 
   // ── 스텝 이동 ──────────────────────────────────────────────
 
-  function goToNextStep() {
+  function goToNextStep(): boolean {
     const stepErrors = validateCurrentStep();
     if (Object.keys(stepErrors).length > 0) {
       setErrors(stepErrors);
-      return;
+      return false;
     }
     setErrors({});
     setCurrentStep((prev) => (prev < 2 ? ((prev + 1) as Step) : prev));
+    return true;
   }
 
   function goToPreviousStep() {

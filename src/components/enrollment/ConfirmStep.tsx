@@ -137,7 +137,7 @@ export default function ConfirmStep({
 
       {/* 단체 정보 */}
       {isGroup && (
-        <SectionCard title="단체 정보">
+        <SectionCard title="단체 정보" onEdit={() => onEditStep(1)}>
           {group !== null ? (
             <>
               <dl className="space-y-2">

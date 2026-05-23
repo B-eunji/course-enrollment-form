@@ -17,6 +17,11 @@ import ApplicantStep from "@/components/enrollment/ApplicantStep";
 import ConfirmStep from "@/components/enrollment/ConfirmStep";
 import CompleteStep from "@/components/enrollment/CompleteStep";
 import FormNavigation from "@/components/enrollment/FormNavigation";
+import {
+  validateApplicantStep,
+  validateConfirmStep,
+  validateCourseStep,
+} from "@/utils/validation";
 
 // validation error key → DOM id 매핑
 // 동적 참가자 key (group.participants.N.name/email)는 resolveErrorId에서 별도 처리
@@ -26,6 +31,7 @@ const ERROR_KEY_TO_ID: Record<string, string> = {
   "applicant.email": "applicant-email",
   "applicant.phone": "applicant-phone",
   "applicant.motivation": "applicant-motivation",
+  group: "group-section",
   "group.organizationName": "org-name",
   "group.contactPerson": "contact-person",
   "group.headCount": "head-count",
@@ -44,6 +50,34 @@ function resolveErrorId(key: string): string | null {
   }
 
   return null;
+}
+
+function getStepErrors(
+  step: Step,
+  data: EnrollmentFormState
+): Record<string, string> {
+  switch (step) {
+    case 0:
+      return validateCourseStep(data);
+    case 1:
+      return validateApplicantStep(data);
+    case 2:
+      return validateConfirmStep(data);
+  }
+}
+
+function scrollToFirstError(errorRecord: Record<string, string>): void {
+  const keys = Object.keys(errorRecord);
+  if (keys.length === 0) return;
+
+  const firstId = resolveErrorId(keys[0]);
+  if (firstId === null) return;
+
+  requestAnimationFrame(() => {
+    document
+      .getElementById(firstId)
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
 }
 
 function createEnrollmentRequest(
@@ -120,19 +154,6 @@ export default function Home() {
   const [enrollmentResult, setEnrollmentResult] =
     useState<EnrollmentResponse | null>(null);
 
-  // validation 실패 시 첫 번째 에러 위치로 스크롤
-  useEffect(() => {
-    const keys = Object.keys(errors);
-    if (keys.length === 0) return;
-
-    const firstId = resolveErrorId(keys[0]);
-    if (firstId === null) return;
-
-    document
-      .getElementById(firstId)
-      ?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [errors]);
-
   useEffect(() => {
     fetch("/api/courses")
       .then((res) => {
@@ -158,7 +179,10 @@ export default function Home() {
 
   function handleNext() {
     setSubmitError(null);
-    goToNextStep();
+    const success = goToNextStep();
+    if (!success) {
+      scrollToFirstError(getStepErrors(currentStep, formData));
+    }
   }
 
   function handleEditStep(step: Step) {

@@ -90,7 +90,7 @@ export default function CompleteStep({
           }`}
         >
           {isConfirmed
-            ? "신청이 완료되었습니다."
+            ? "신청이 확정되었습니다."
             : "신청이 접수되었습니다."}
         </p>
         {!isConfirmed && (
@@ -107,7 +107,7 @@ export default function CompleteStep({
           <InfoRow label="신청 번호" value={enrollmentResult.enrollmentId} />
           <InfoRow
             label="상태"
-            value={isConfirmed ? "신청 완료" : "접수 중"}
+            value={isConfirmed ? "확정됨" : "접수됨"}
           />
           <InfoRow
             label="신청 일시"
@@ -130,7 +130,7 @@ export default function CompleteStep({
         <button
           type="button"
           onClick={onReset}
-          className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 sm:w-auto sm:px-5"
+          className="w-full cursor-pointer rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 sm:w-auto sm:px-5"
         >
           처음으로 돌아가기
         </button>

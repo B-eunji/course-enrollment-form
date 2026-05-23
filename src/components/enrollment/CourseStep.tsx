@@ -115,9 +115,9 @@ export default function CourseStep({
             key={cat}
             type="button"
             onClick={() => setActiveCategory(cat)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+            className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
               activeCategory === cat
-                ? "bg-blue-600 text-white"
+                ? "bg-blue-600 text-white hover:bg-blue-700"
                 : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
             }`}
           >
@@ -128,9 +128,13 @@ export default function CourseStep({
 
       {/* 강의 선택 에러 */}
       {errors.courseId !== undefined && (
-        <p id="course-selection-error" className="text-xs text-red-500">
+        <div
+          id="course-selection-error"
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+        >
           {errors.courseId}
-        </p>
+        </div>
       )}
 
       {/* 강의 목록 */}
@@ -219,8 +223,8 @@ export default function CourseStep({
                     isFull
                       ? "cursor-not-allowed bg-zinc-200 text-zinc-400"
                       : isSelected
-                        ? "bg-blue-600 text-white hover:bg-blue-700"
-                        : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
+                        ? "cursor-pointer bg-blue-600 text-white hover:bg-blue-700"
+                        : "cursor-pointer bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
                   }`}
                 >
                   {isFull ? "마감된 강의" : isSelected ? "선택됨" : "선택하기"}

@@ -4,7 +4,7 @@ import type { Step } from "@/hooks/useEnrollmentForm";
 
 const STEPS = [
   { label: "강의 선택" },
-  { label: "신청자 정보" },
+  { label: "신청자 정보 입력" },
   { label: "확인 및 제출" },
 ] as const;
 
@@ -58,7 +58,7 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
 
                 <span
                   className={[
-                    "max-w-[4.25rem] text-center text-[10px] font-medium leading-tight sm:max-w-none sm:text-xs",
+                    "max-w-[5.75rem] text-center text-[10px] font-medium leading-tight sm:max-w-none sm:text-xs",
                     isCompleted && "text-indigo-600",
                     isCurrent && "text-indigo-700",
                     isUpcoming && "text-gray-400",

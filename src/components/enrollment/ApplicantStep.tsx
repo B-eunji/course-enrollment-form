@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import type { Course } from "@/types/course";
 import type {
   ApplicantInfo,
   EnrollmentFormState,
@@ -10,6 +11,7 @@ import type {
 
 interface ApplicantStepProps {
   formData: EnrollmentFormState;
+  selectedCourse?: Course;
   onUpdateApplicant: (fields: Partial<ApplicantInfo>) => void;
   onUpdateGroup: (
     fields: Partial<Omit<GroupInfo, "headCount" | "participants">>
@@ -23,9 +25,13 @@ interface ApplicantStepProps {
 
 function FieldLabel({
   htmlFor,
+  required = false,
+  optional = false,
   children,
 }: {
   htmlFor: string;
+  required?: boolean;
+  optional?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -34,6 +40,14 @@ function FieldLabel({
       className="mb-1 block text-sm font-medium text-zinc-700"
     >
       {children}
+      {required && (
+        <span className="ml-0.5 text-red-500" aria-hidden="true">
+          *
+        </span>
+      )}
+      {optional && (
+        <span className="ml-1 text-xs font-normal text-zinc-400">(선택)</span>
+      )}
     </label>
   );
 }
@@ -73,8 +87,21 @@ function FieldError({ message }: { message?: string }) {
   return <p className="mt-1 text-xs text-red-500">{message}</p>;
 }
 
+function formatPrice(price: number): string {
+  return price.toLocaleString("ko-KR") + "원";
+}
+
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export default function ApplicantStep({
   formData,
+  selectedCourse,
   onUpdateApplicant,
   onUpdateGroup,
   onUpdateHeadCount,
@@ -91,12 +118,28 @@ export default function ApplicantStep({
 
   return (
     <div className="min-w-0 space-y-8">
+      {selectedCourse !== undefined && (
+        <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
+          <p className="text-xs font-medium text-blue-600">신청 중인 강의</p>
+          <p className="mt-1 text-sm font-semibold text-zinc-800">
+            {selectedCourse.title}
+          </p>
+          <p className="mt-1 text-xs text-zinc-600">
+            {formatDate(selectedCourse.startDate)} ~{" "}
+            {formatDate(selectedCourse.endDate)} ·{" "}
+            {formatPrice(selectedCourse.price)}
+          </p>
+        </div>
+      )}
+
       {/* 공통 신청자 정보 */}
       <section className="space-y-4">
         <h2 className="text-base font-semibold text-zinc-800">신청자 정보</h2>
 
         <div>
-          <FieldLabel htmlFor="applicant-name">이름</FieldLabel>
+          <FieldLabel htmlFor="applicant-name" required>
+            이름
+          </FieldLabel>
           <TextInput
             id="applicant-name"
             value={applicant.name}
@@ -111,7 +154,9 @@ export default function ApplicantStep({
         </div>
 
         <div>
-          <FieldLabel htmlFor="applicant-email">이메일</FieldLabel>
+          <FieldLabel htmlFor="applicant-email" required>
+            이메일
+          </FieldLabel>
           <TextInput
             id="applicant-email"
             type="email"
@@ -127,7 +172,9 @@ export default function ApplicantStep({
         </div>
 
         <div>
-          <FieldLabel htmlFor="applicant-phone">전화번호</FieldLabel>
+          <FieldLabel htmlFor="applicant-phone" required>
+            전화번호
+          </FieldLabel>
           <TextInput
             id="applicant-phone"
             type="tel"
@@ -143,7 +190,9 @@ export default function ApplicantStep({
         </div>
 
         <div>
-          <FieldLabel htmlFor="applicant-motivation">수강 동기</FieldLabel>
+          <FieldLabel htmlFor="applicant-motivation" optional>
+            수강 동기
+          </FieldLabel>
           <textarea
             id="applicant-motivation"
             value={applicant.motivation ?? ""}
@@ -178,7 +227,9 @@ export default function ApplicantStep({
             </h2>
 
             <div>
-              <FieldLabel htmlFor="org-name">단체명</FieldLabel>
+              <FieldLabel htmlFor="org-name" required>
+                단체명
+              </FieldLabel>
               <TextInput
                 id="org-name"
                 value={group?.organizationName ?? ""}
@@ -193,7 +244,9 @@ export default function ApplicantStep({
             </div>
 
             <div>
-              <FieldLabel htmlFor="contact-person">담당자 연락처</FieldLabel>
+              <FieldLabel htmlFor="contact-person" required>
+                담당자 연락처
+              </FieldLabel>
               <TextInput
                 id="contact-person"
                 type="tel"
@@ -209,7 +262,9 @@ export default function ApplicantStep({
             </div>
 
             <div>
-              <FieldLabel htmlFor="head-count">신청 인원수</FieldLabel>
+              <FieldLabel htmlFor="head-count" required>
+                신청 인원수
+              </FieldLabel>
               <select
                 id="head-count"
                 value={group?.headCount ?? 2}
@@ -252,7 +307,7 @@ export default function ApplicantStep({
                     </p>
 
                     <div>
-                      <FieldLabel htmlFor={`participant-name-${index}`}>
+                      <FieldLabel htmlFor={`participant-name-${index}`} required>
                         이름
                       </FieldLabel>
                       <TextInput
@@ -269,7 +324,7 @@ export default function ApplicantStep({
                     </div>
 
                     <div>
-                      <FieldLabel htmlFor={`participant-email-${index}`}>
+                      <FieldLabel htmlFor={`participant-email-${index}`} required>
                         이메일
                       </FieldLabel>
                       <TextInput

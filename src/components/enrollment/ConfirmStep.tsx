@@ -50,7 +50,7 @@ function SectionCard({
           <button
             type="button"
             onClick={onEdit}
-            className="text-xs font-medium text-blue-600 hover:text-blue-700"
+            className="cursor-pointer text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
           >
             수정
           </button>

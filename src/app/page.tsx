@@ -269,7 +269,7 @@ export default function Home() {
       <div className="mx-auto w-full min-w-0 max-w-2xl">
         {/* 페이지 헤더 */}
         <div className="mb-6 text-center sm:mb-8">
-          <h1 className="text-xl font-bold text-zinc-900 sm:text-2xl">다단계 수강 신청</h1>
+          <h1 className="text-xl font-bold text-zinc-900 sm:text-2xl">수강 신청</h1>
           <p className="mt-2 text-sm text-zinc-500">
             강의를 선택하고 신청 정보를 입력한 뒤 최종 확인해 주세요.
           </p>
@@ -296,6 +296,7 @@ export default function Home() {
           {currentStep === 1 && (
             <ApplicantStep
               formData={formData}
+              selectedCourse={selectedCourse}
               onUpdateApplicant={updateApplicant}
               onUpdateGroup={updateGroup}
               onUpdateHeadCount={updateHeadCount}

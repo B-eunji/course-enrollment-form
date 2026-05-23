@@ -138,6 +138,7 @@ export default function Home() {
     goToPreviousStep,
     goToStep,
     clearFieldError,
+    clearFieldErrors,
     updateCourseId,
     updateEnrollmentType,
     updateApplicant,
@@ -301,6 +302,7 @@ export default function Home() {
               onUpdateParticipant={updateParticipant}
               errors={errors}
               onClearError={clearFieldError}
+              onClearErrors={clearFieldErrors}
             />
           )}
 

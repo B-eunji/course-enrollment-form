@@ -77,6 +77,18 @@ export function useEnrollmentForm() {
     });
   }
 
+  function clearFieldErrors(keys: string[]) {
+    setErrors((prev) => {
+      const hasKeyToRemove = keys.some((key) => key in prev);
+      if (!hasKeyToRemove) return prev;
+      const next = { ...prev };
+      for (const key of keys) {
+        delete next[key];
+      }
+      return next;
+    });
+  }
+
   // ── 스텝 이동 ──────────────────────────────────────────────
 
   function goToNextStep(): boolean {
@@ -192,6 +204,7 @@ export function useEnrollmentForm() {
     goToPreviousStep,
     goToStep,
     clearFieldError,
+    clearFieldErrors,
     updateCourseId,
     updateEnrollmentType,
     updateApplicant,

@@ -18,6 +18,7 @@ interface ApplicantStepProps {
   onUpdateParticipant: (index: number, fields: Partial<Participant>) => void;
   errors: Record<string, string>;
   onClearError: (key: string) => void;
+  onClearErrors: (keys: string[]) => void;
 }
 
 function FieldLabel({
@@ -80,6 +81,7 @@ export default function ApplicantStep({
   onUpdateParticipant,
   errors,
   onClearError,
+  onClearErrors,
 }: ApplicantStepProps) {
   const { applicant, type } = formData;
   const isGroup = type === "group";
@@ -278,7 +280,12 @@ export default function ApplicantStep({
                         hasError={!!errors[`group.participants.${index}.email`]}
                         onChange={(value) => {
                           onUpdateParticipant(index, { email: value });
-                          onClearError(`group.participants.${index}.email`);
+                          onClearErrors(
+                            group.participants.map(
+                              (_, participantIndex) =>
+                                `group.participants.${participantIndex}.email`,
+                            ),
+                          );
                         }}
                       />
                       <FieldError message={errors[`group.participants.${index}.email`]} />

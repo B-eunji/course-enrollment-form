@@ -90,7 +90,7 @@ export default function ApplicantStep({
   const headCountOptions = Array.from({ length: 9 }, (_, i) => i + 2);
 
   return (
-    <div className="space-y-8">
+    <div className="min-w-0 space-y-8">
       {/* 공통 신청자 정보 */}
       <section className="space-y-4">
         <h2 className="text-base font-semibold text-zinc-800">신청자 정보</h2>
@@ -172,7 +172,7 @@ export default function ApplicantStep({
         <section id="group-section" className="space-y-6">
           <FieldError message={errors.group} />
           {/* 단체 기본 정보 */}
-          <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-5 space-y-4">
+          <div className="space-y-4 rounded-xl border border-zinc-200 bg-zinc-50 p-4 sm:p-5">
             <h2 className="text-base font-semibold text-zinc-800">
               단체 정보
             </h2>
@@ -245,7 +245,7 @@ export default function ApplicantStep({
                 {group.participants.map((participant, index) => (
                   <li
                     key={index}
-                    className="rounded-xl border border-zinc-200 bg-white p-4 space-y-3"
+                    className="space-y-3 rounded-xl border border-zinc-200 bg-white p-3 sm:p-4"
                   >
                     <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
                       참가자 {index + 1}

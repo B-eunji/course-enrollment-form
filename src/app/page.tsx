@@ -243,15 +243,15 @@ export default function Home() {
 
   if (enrollmentResult !== null) {
     return (
-      <main className="min-h-screen bg-zinc-50 px-4 py-12">
-        <div className="mx-auto max-w-2xl">
-          <div className="mb-8 text-center">
-            <h1 className="text-2xl font-bold text-zinc-900">수강 신청 완료</h1>
+      <main className="min-h-screen overflow-x-hidden bg-zinc-50 px-4 py-8 sm:py-12">
+        <div className="mx-auto w-full min-w-0 max-w-2xl">
+          <div className="mb-6 text-center sm:mb-8">
+            <h1 className="text-xl font-bold text-zinc-900 sm:text-2xl">수강 신청 완료</h1>
             <p className="mt-2 text-sm text-zinc-500">
               신청 정보가 정상적으로 접수되었습니다.
             </p>
           </div>
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6 md:p-8">
             <CompleteStep
               enrollmentResult={enrollmentResult}
               formData={formData}
@@ -265,23 +265,23 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50 px-4 py-12">
-      <div className="mx-auto max-w-2xl">
+    <main className="min-h-screen overflow-x-hidden bg-zinc-50 px-4 py-8 sm:py-12">
+      <div className="mx-auto w-full min-w-0 max-w-2xl">
         {/* 페이지 헤더 */}
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-zinc-900">다단계 수강 신청</h1>
+        <div className="mb-6 text-center sm:mb-8">
+          <h1 className="text-xl font-bold text-zinc-900 sm:text-2xl">다단계 수강 신청</h1>
           <p className="mt-2 text-sm text-zinc-500">
             강의를 선택하고 신청 정보를 입력한 뒤 최종 확인해 주세요.
           </p>
         </div>
 
         {/* 스텝 인디케이터 */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <StepIndicator currentStep={currentStep} />
         </div>
 
         {/* 폼 카드 */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6 md:p-8">
           {currentStep === 0 && (
             <CourseStep
               selectedCourseId={formData.courseId}

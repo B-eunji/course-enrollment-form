@@ -15,7 +15,7 @@ interface StepIndicatorProps {
 export default function StepIndicator({ currentStep }: StepIndicatorProps) {
   return (
     <nav aria-label="폼 진행 단계">
-      <ol className="flex items-center justify-center gap-0">
+      <ol className="flex w-full min-w-0 items-center">
         {STEPS.map((step, index) => {
           const isCompleted = index < currentStep;
           const isCurrent = index === currentStep;
@@ -26,13 +26,13 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
             <li
               key={step.label}
               aria-current={isCurrent ? "step" : undefined}
-              className="flex items-center"
+              className={`flex min-w-0 items-center ${isLast ? "" : "flex-1"}`}
             >
               {/* 단계 원형 + 라벨 */}
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex shrink-0 flex-col items-center gap-1 sm:gap-2">
                 <div
                   className={[
-                    "flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold transition-colors",
+                    "flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-colors sm:h-9 sm:w-9 sm:text-sm",
                     isCompleted && "bg-indigo-600 text-white",
                     isCurrent && "border-2 border-indigo-600 bg-white text-indigo-600",
                     isUpcoming && "border-2 border-gray-300 bg-white text-gray-400",
@@ -58,7 +58,7 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
 
                 <span
                   className={[
-                    "text-xs font-medium",
+                    "max-w-[4.25rem] text-center text-[10px] font-medium leading-tight sm:max-w-none sm:text-xs",
                     isCompleted && "text-indigo-600",
                     isCurrent && "text-indigo-700",
                     isUpcoming && "text-gray-400",
@@ -75,7 +75,7 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
                 <div
                   aria-hidden="true"
                   className={[
-                    "mx-3 mb-5 h-0.5 w-16",
+                    "mx-1 mb-4 h-0.5 min-w-2 flex-1 sm:mx-2 sm:mb-5",
                     isCompleted ? "bg-indigo-600" : "bg-gray-300",
                   ].join(" ")}
                 />

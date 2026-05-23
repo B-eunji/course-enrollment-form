@@ -32,16 +32,16 @@ export default function FormNavigation({
         </p>
       )}
 
-      <div className="flex items-center justify-between">
+      <div
+        className={`flex gap-3 ${isFirstStep ? "justify-end" : "flex-col-reverse sm:flex-row sm:items-center sm:justify-between"}`}
+      >
       {/* 이전 버튼: 첫 단계에서는 렌더링하지 않음 */}
-      {isFirstStep ? (
-        <div aria-hidden="true" />
-      ) : (
+      {!isFirstStep && (
         <button
           type="button"
           onClick={onPrevious}
           disabled={isSubmitting}
-          className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full shrink-0 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:px-5"
         >
           이전
         </button>
@@ -53,7 +53,7 @@ export default function FormNavigation({
           type="button"
           onClick={onSubmit}
           disabled={isSubmitting || isSubmitDisabled}
-          className="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-5"
         >
           {isSubmitting && (
             <svg
@@ -84,7 +84,7 @@ export default function FormNavigation({
           type="button"
           onClick={onNext}
           disabled={isSubmitting}
-          className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full shrink-0 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-5"
         >
           다음
         </button>

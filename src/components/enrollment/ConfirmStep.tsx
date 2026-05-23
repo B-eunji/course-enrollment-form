@@ -43,8 +43,8 @@ function SectionCard({
   children: ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-5">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="rounded-xl border border-zinc-200 bg-white p-4 sm:p-5">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-sm font-semibold text-zinc-800">{title}</h2>
         {onEdit !== undefined && (
           <button
@@ -63,9 +63,9 @@ function SectionCard({
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-2 text-sm">
-      <dt className="w-28 shrink-0 text-zinc-400">{label}</dt>
-      <dd className="text-zinc-800">{value}</dd>
+    <div className="flex min-w-0 flex-col gap-0.5 text-sm sm:flex-row sm:gap-2">
+      <dt className="shrink-0 text-zinc-400 sm:w-28">{label}</dt>
+      <dd className="min-w-0 break-words text-zinc-800">{value}</dd>
     </div>
   );
 }
@@ -83,7 +83,7 @@ export default function ConfirmStep({
   const group = isGroup ? (formData.group ?? null) : null;
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       {/* 선택한 강의 정보 */}
       <SectionCard title="선택 강의" onEdit={() => onEditStep(0)}>
         {selectedCourse !== undefined ? (
@@ -186,7 +186,7 @@ export default function ConfirmStep({
       {/* 약관 동의 */}
       <div
         id="terms-agreement"
-        className={`rounded-xl border bg-zinc-50 px-5 py-4 ${
+        className={`rounded-xl border bg-zinc-50 px-4 py-4 sm:px-5 ${
           errors.agreedToTerms ? "border-red-400" : "border-zinc-200"
         }`}
       >
@@ -198,9 +198,11 @@ export default function ConfirmStep({
               onChangeAgreement(e.target.checked);
               onClearError("agreedToTerms");
             }}
-            className="mt-0.5 h-4 w-4 accent-blue-600"
+            className="mt-0.5 h-4 w-4 shrink-0 accent-blue-600"
           />
-          <span>수강 신청 및 개인정보 수집·이용 약관에 동의합니다.</span>
+          <span className="min-w-0 break-words">
+            수강 신청 및 개인정보 수집·이용 약관에 동의합니다.
+          </span>
         </label>
         {errors.agreedToTerms !== undefined && (
           <p className="mt-2 text-xs text-red-500">{errors.agreedToTerms}</p>

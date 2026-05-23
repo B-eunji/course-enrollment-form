@@ -84,11 +84,11 @@ export default function CourseStep({
   const allFilters: CategoryFilter[] = ["all", ...COURSE_CATEGORIES];
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       {/* 신청 유형 선택 */}
       <div>
         <p className="mb-2 text-sm font-medium text-zinc-700">신청 유형</p>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
           {(["personal", "group"] as const).map((type) => (
             <label
               key={type}
@@ -145,7 +145,7 @@ export default function CourseStep({
           해당 카테고리에 강의가 없습니다.
         </p>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2">
+        <ul className="grid min-w-0 gap-4 sm:grid-cols-2">
           {courses.map((course) => {
             const isFull = course.currentEnrollment >= course.maxCapacity;
             const isSelected = selectedCourseId === course.id;
@@ -153,7 +153,7 @@ export default function CourseStep({
             return (
               <li
                 key={course.id}
-                className={`relative flex flex-col rounded-xl border-2 p-5 transition-all ${
+                className={`relative flex min-w-0 flex-col overflow-hidden rounded-xl border-2 p-4 transition-all sm:p-5 ${
                   isFull
                     ? "border-zinc-200 bg-zinc-50 opacity-60"
                     : isSelected
@@ -184,27 +184,27 @@ export default function CourseStep({
                 </p>
 
                 {/* 메타 정보 */}
-                <dl className="mb-4 space-y-1 text-sm text-zinc-600">
-                  <div className="flex gap-1">
-                    <dt className="font-medium text-zinc-400">강사</dt>
-                    <dd>{course.instructor}</dd>
+                <dl className="mb-4 min-w-0 space-y-1 text-sm text-zinc-600">
+                  <div className="flex min-w-0 gap-1">
+                    <dt className="shrink-0 font-medium text-zinc-400">강사</dt>
+                    <dd className="min-w-0 break-words">{course.instructor}</dd>
                   </div>
-                  <div className="flex gap-1">
-                    <dt className="font-medium text-zinc-400">일정</dt>
-                    <dd>
+                  <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:gap-1">
+                    <dt className="shrink-0 font-medium text-zinc-400">일정</dt>
+                    <dd className="min-w-0 break-words">
                       {formatDate(course.startDate)} ~{" "}
                       {formatDate(course.endDate)}
                     </dd>
                   </div>
-                  <div className="flex gap-1">
-                    <dt className="font-medium text-zinc-400">수강료</dt>
-                    <dd className="font-semibold text-zinc-800">
+                  <div className="flex min-w-0 gap-1">
+                    <dt className="shrink-0 font-medium text-zinc-400">수강료</dt>
+                    <dd className="min-w-0 font-semibold text-zinc-800">
                       {formatPrice(course.price)}
                     </dd>
                   </div>
-                  <div className="flex gap-1">
-                    <dt className="font-medium text-zinc-400">정원</dt>
-                    <dd>
+                  <div className="flex min-w-0 gap-1">
+                    <dt className="shrink-0 font-medium text-zinc-400">정원</dt>
+                    <dd className="min-w-0">
                       {course.currentEnrollment} / {course.maxCapacity}명
                     </dd>
                   </div>

@@ -22,9 +22,9 @@ function formatDateTime(iso: string): string {
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-2 py-2 text-sm">
-      <dt className="w-28 shrink-0 text-zinc-400">{label}</dt>
-      <dd className="text-zinc-800">{value}</dd>
+    <div className="flex min-w-0 flex-col gap-0.5 py-2 text-sm sm:flex-row sm:gap-2">
+      <dt className="shrink-0 text-zinc-400 sm:w-28">{label}</dt>
+      <dd className="min-w-0 break-words text-zinc-800">{value}</dd>
     </div>
   );
 }
@@ -38,10 +38,10 @@ export default function CompleteStep({
   const isConfirmed = enrollmentResult.status === "confirmed";
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       {/* 상단 완료 배너 */}
       <div
-        className={`rounded-xl px-6 py-5 text-center ${
+        className={`rounded-xl px-4 py-5 text-center sm:px-6 ${
           isConfirmed
             ? "bg-green-50 ring-1 ring-green-200"
             : "bg-blue-50 ring-1 ring-blue-200"
@@ -101,7 +101,7 @@ export default function CompleteStep({
       </div>
 
       {/* 신청 요약 카드 */}
-      <div className="rounded-xl border border-zinc-200 bg-white p-5">
+      <div className="rounded-xl border border-zinc-200 bg-white p-4 sm:p-5">
         <h2 className="mb-3 text-sm font-semibold text-zinc-800">신청 요약</h2>
         <dl className="divide-y divide-zinc-100">
           <InfoRow label="신청 번호" value={enrollmentResult.enrollmentId} />
@@ -130,7 +130,7 @@ export default function CompleteStep({
         <button
           type="button"
           onClick={onReset}
-          className="rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+          className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 sm:w-auto sm:px-5"
         >
           처음으로 돌아가기
         </button>

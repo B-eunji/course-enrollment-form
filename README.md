@@ -179,7 +179,7 @@ type EnrollmentRequest = PersonalEnrollmentRequest | GroupEnrollmentRequest;
 
 - 강의 원본 데이터: `src/constants/courses.ts` (`MOCK_COURSES`)
 - 카테고리 상수: `src/types/course.ts` (`COURSE_CATEGORIES`)
-- Route Handler는 위 상수를 import해 응답을 생성한다. **실제 DB·메모리 저장소를 사용하지 않으며, 제출 내역을 영구 저장하지 않는다.**
+- Route Handler는 위 상수를 import해 응답을 생성한다. **실제 DB나 영구 저장소를 사용하지 않으며, 제출 내역을 영구 저장하지 않습니다.**
 
 ### API 엔드포인트
 
@@ -252,13 +252,13 @@ type EnrollmentRequest = PersonalEnrollmentRequest | GroupEnrollmentRequest;
 | 모바일 최적화 | 전체 구현하지 않음. 좁은 화면에서 가로 깨짐을 줄이기 위한 기본 레이아웃(`overflow-x-hidden`, `sm:` breakpoint 등)만 적용 |
 | 강의 데이터 중복 fetch | `CourseStep`과 `page.tsx`가 각각 `/api/courses`를 호출할 수 있음. 구현 단순성·제출 안정성을 우선했으며, 실제 서비스에서는 상위 상태 또는 query cache로 단일화 가능 |
 | Mock API 영속성 | 서버 메모리/DB 저장 없음. `duplicate@example.com` 외 실제 중복 신청 저장 검증 없음 |
-| 인증/인가, i18n, a11y 전면 대응 | 과제 범위 외 또는 부분 적용 |
+| 인증/인가, 다국어(i18n), 접근성(a11y) 전면 대응 | 과제 범위 외 또는 부분 적용 |
 
 ---
 
 ## AI 활용 범위
 
-ChatGPT와 Cursor를 개발 보조 도구로 활용했다.
+ChatGPT와 Cursor를 개발 보조 도구로 활용했습니다.
 
 **AI 활용**
 
@@ -272,4 +272,3 @@ ChatGPT와 Cursor를 개발 보조 도구로 활용했다.
 - 브라우저 QA, `npm run build` 검증
 - README 정합성 확인 (실제 구현과 대조)
 
-AI가 생성한 결과를 그대로 제출하지 않았다. 리뷰 결과를 바탕으로 수정·검증한 뒤 반영했다.

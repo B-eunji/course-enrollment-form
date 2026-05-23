@@ -23,7 +23,7 @@ export function validateApplicantStep(
 
   const name = applicant.name.trim();
   if (name.length < 2 || name.length > 20) {
-    errors["applicant.name"] = "이름은 5~20자만 사용 가능합니다.";
+    errors["applicant.name"] = "이름은 2~20자만 사용 가능합니다.";
   }
 
   if (!EMAIL_REGEX.test(applicant.email)) {

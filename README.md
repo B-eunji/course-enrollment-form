@@ -106,19 +106,21 @@ src/
 
 ### 단일 페이지 스텝 전환 (vs. 페이지 라우팅)
 
-URL을 `/step/1`, `/step/2`로 나누면 직접 접근 시 이전 단계 데이터가 없어 처리가 복잡해진다. 단일 페이지에서 상태로 스텝을 관리하면 데이터 흐름이 단순하고, 중간 단계 직접 접근을 막기 쉽다.
+URL을 `/step/1`, `/step/2`로 나누면 직접 접근 시 이전 단계 데이터가 없어 처리가 복잡해질 수 있다고 판단해 단일 페이지로 구성하였습니다. 단일 페이지 상태로 스텝을 관리하면 데이터 흐름이 단순하고, 중간 단계 직접 접근을 막기도 쉽습니다.
 
 ### 폼 상태 관리: `useEnrollmentForm` custom hook
 
-각 Step 컴포넌트가 독립적으로 `useState`를 가지면, 이전/다음 이동 시 데이터 유지와 최종 제출 데이터 조합이 복잡해진다고 판단했다. 따라서 `useEnrollmentForm`에서 `currentStep`, `formData`, `errors`, `resetForm` 등을 통합 관리한다.
+각 Step 컴포넌트가 독립적으로 `useState`를 가지면, 이전/다음 이동 시 데이터 유지와 최종 제출 데이터 조합이 복잡해진다고 판단했습니다. 그래서 `currentStep`, `formData`, `errors`, `resetForm` 등을 `useEnrollmentForm`에서 통합 관리하도록 설계했습니다.
 
-Step 컴포넌트는 `formData`를 props로 받고, 변경 이벤트만 부모/hook으로 위임하는 **controlled component** 구조다.
+Step 컴포넌트는 props와 callback 중심으로 분리했습니다. `formData`를 props로 받고, 변경 이벤트만 부모/hook으로 위임하는 controlled component 구조를 택했습니다. Step은 UI 렌더링에 집중하고, 상태 변경 책임은 hook에 두도록 나눴습니다.
 
-React Hook Form 같은 라이브러리 대신 custom hook을 선택한 이유는, 과제 규모에서 상태 흐름과 조건부 데이터 처리 방침을 직접 보여주기 위해서다. 실제 대규모 서비스에서는 React Hook Form + Zod 등으로 확장하는 편이 유지보수에 유리하다는 trade-off가 있다.
+React Hook Form 같은 라이브러리 대신 custom hook을 선택했습니다. 과제 규모에서는 상태 흐름과 조건부 데이터 처리 방침을 직접 드러내는 편이 낫다고 판단했기 때문입니다. 다만 실제 대규모 서비스에서는 React Hook Form + Zod 등으로 확장하는 편이 유지보수에 유리하다는 trade-off가 있습니다.
+
+제출 성공/실패 상태(`enrollmentResult`, `submitError`, `isSubmitting`)는 `page.tsx`에서 별도로 관리했습니다. 폼 입력 상태와 API 응답 상태의 생명주기가 다르기 때문에, 성공 시 `CompleteStep`으로 전환하고 실패 시 3단계에 에러를 남기는 흐름을 분리할 수 있도록 했습니다.
 
 ### 유효성 검증 전략
 
-**클라이언트 검증은 UX, 서버 검증은 데이터 신뢰성**을 위한 이중 방어로 본다.
+클라이언트 검증은 즉각적인 UX 피드백을, Mock API 검증은 제출 데이터의 신뢰성을 담당하도록 역할을 나눴습니다.
 
 | 시점 | 검증 내용 |
 | --- | --- |
@@ -126,12 +128,14 @@ React Hook Form 같은 라이브러리 대신 custom hook을 선택한 이유는
 | Step 2 → 3 | `validateApplicantStep` — 신청자 정보 + 단체 조건부 필드 |
 | Step 3 제출 | 약관 미동의 시 제출 버튼 비활성화 (`validateConfirmStep` 로직 분리) |
 
-- 검증 로직은 UI가 아닌 `utils/validation.ts`에 분리했다.
-- 에러는 `errors` 객체(`Record<string, string>`)로 관리하고, 각 필드 근처에 표시한다.
-- 검증 실패 시 `page.tsx`의 `scrollToFirstError`로 첫 번째 에러 위치로 스크롤한다.
-- 입력값 수정 시 `clearFieldError` / `clearFieldErrors`로 해당 필드 에러를 즉시 제거한다.
+- 검증 로직은 UI와 분리하기 위해 `utils/validation.ts`로 뺐습니다. 스텝별 규칙을 한곳에서 관리할 수 있습니다.
+- 에러는 `errors` 객체(`Record<string, string>`)로 관리하고, 각 필드 근처에 표시합니다.
+- 검증 실패 시 `page.tsx`의 `scrollToFirstError`로 첫 번째 에러 위치로 스크롤합니다.
+- 입력값 수정 시 `clearFieldError` / `clearFieldErrors`로 해당 필드 에러를 즉시 제거합니다.
 
 **서버(Mock API) 검증**
+
+클라이언트를 우회한 요청이나 비즈니스 규칙 위반을 서버에서 한 번 더 걸러내기 위해 Mock API에도 검증을 두었습니다.
 
 - `POST /api/enrollments`에서 요청 구조·필수값·약관 동의를 검증하고, 실패 시 `INVALID_INPUT` (400)
 - 정원 마감 강의 → `COURSE_FULL` (409)
@@ -139,10 +143,10 @@ React Hook Form 같은 라이브러리 대신 custom hook을 선택한 이유는
 
 ### 조건부 필드 데이터 처리 방침
 
-- 신청 유형은 `personal` / `group`으로 관리한다.
-- 개인 → 단체 전환: `createDefaultGroup()`으로 단체 기본 데이터 생성
-- 단체 → 개인 전환: `group` 필드 제거 (제출 데이터에 불필요한 단체 정보가 남지 않음)
-- `headCount` 변경 시 `participants` 배열 길이를 동기화 (늘리면 빈 참가자 추가, 줄이면 slice)
+- 신청 유형은 `personal` / `group`으로 관리합니다.
+- 개인 → 단체 전환: `createDefaultGroup()`으로 단체 기본 데이터를 생성합니다.
+- 단체 → 개인 전환: `group` 필드를 제거합니다. 제출 데이터에 불필요한 단체 정보가 남지 않도록 하기 위함입니다.
+- `headCount` 변경 시 `participants` 배열 길이를 동기화합니다. 늘리면 빈 참가자를 추가하고, 줄이면 slice합니다.
 - 공통 신청자 정보(`applicant`) = 대표자/담당자, `group.participants` = 실제 수강 대상자
 
 **작성 중 상태 vs API 요청 타입 분리**
@@ -161,11 +165,11 @@ interface EnrollmentFormState {
 type EnrollmentRequest = PersonalEnrollmentRequest | GroupEnrollmentRequest;
 ```
 
-제출 직전 `page.tsx`의 `createEnrollmentRequest()`에서 `personal` / `group` 요청 타입으로 좁혀 API 요청을 생성한다.
+작성 중에는 `group`을 optional로 두고, 제출 직전 `page.tsx`의 `createEnrollmentRequest()`에서 `personal` / `group` 요청 타입으로 좁혀 API 요청을 생성하도록 설계했습니다. 폼 작성 편의성과 API 계약의 엄격함을 분리하기 위함입니다.
 
 ### Mock API를 Route Handler로 구성
 
-별도 Express 서버 없이 Next.js Route Handler로 `/api/courses`, `/api/enrollments`를 구현했다. 클라이언트는 실제 서비스와 동일한 `fetch` 패턴을 유지하면서, 추가 인프라 없이 동작한다.
+별도 Express 서버 없이 Next.js Route Handler로 `/api/courses`, `/api/enrollments`를 구현했습니다. 클라이언트는 실제 서비스와 동일한 `fetch` 패턴을 유지할 수 있고, 추가 인프라 없이 동작하도록 했습니다.
 
 ---
 
